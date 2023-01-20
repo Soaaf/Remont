@@ -1,0 +1,1 @@
+﻿select n_avto from Remont where data > '20221231'

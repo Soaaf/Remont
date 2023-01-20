@@ -1,0 +1,1 @@
+﻿select sum(sum) from Remont

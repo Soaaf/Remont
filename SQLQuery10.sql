@@ -1,0 +1,1 @@
+﻿select n_avto, sum(sum) from Remont group by n_avto

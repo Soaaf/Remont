@@ -1,0 +1,1 @@
+﻿select max(stoim), min(stoim)  from Uslugi

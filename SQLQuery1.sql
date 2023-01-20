@@ -1,0 +1,1 @@
+﻿SELECT naimen FROM uslugi WHERE stoim BETWEEN 2500 and 4000

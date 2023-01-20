@@ -1,0 +1,1 @@
+﻿SELECT n_z_n FROM remont WHERE data < '20220629'

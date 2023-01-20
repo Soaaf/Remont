@@ -1,0 +1,1 @@
+﻿SELECT*FROM Avto WHERE (god = 2006 or god = 2009)
