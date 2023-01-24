@@ -1,0 +1,1 @@
+﻿UPDATE Uslugi SET stoim = 2800 WHERE naimen = N'Замена масла'

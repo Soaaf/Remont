@@ -1,0 +1,1 @@
+﻿DELETE FROM Master WHERE n_mast = 7
