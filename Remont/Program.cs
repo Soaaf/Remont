@@ -8,7 +8,7 @@ namespace Remont
 {
     static class Data
     {
-        public static string Glob_connection_string = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\4 КУРС\Remont\Remont\AvtoBase.mdf;Integrated Security = True";
+        public static string Glob_connection_string = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=G:\4 КУРС\Remont\Remont\AvtoBase.mdf;Integrated Security = True";
         }
     static class Program
     {
