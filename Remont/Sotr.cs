@@ -8,14 +8,16 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Data.SqlClient;
+using Excel = Microsoft.Office.Interop.Excel;
 
 namespace Remont
 {
 
-    
     public partial class Sotr : Form
     {
+        private Excel.Application excel_app;
         string nmas;
+
         public Sotr()
         {
             InitializeComponent();
@@ -42,7 +44,7 @@ namespace Remont
 
         private void dataGridView1_Click(object sender, EventArgs e)
         {
-            
+
             textBox1.Text = dataGridView1[1, dataGridView1.CurrentRow.Index].Value.ToString();
             textBox2.Text = dataGridView1[2, dataGridView1.CurrentRow.Index].Value.ToString();
             nmas = dataGridView1[0, dataGridView1.CurrentRow.Index].Value.ToString();
@@ -110,5 +112,73 @@ namespace Remont
             button3.Enabled = true;
             button1.Enabled = false;
         }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            excel_app = new Excel.Application
+            {
+                Visible = true,
+                SheetsInNewWorkbook = 1
+            };
+            excel_app.Workbooks.Add(Type.Missing);
+
+            Excel.Range _excelCells = (Excel.Range)excel_app.get_Range("A1", "C1").Cells;
+            _excelCells.Merge(Type.Missing);
+            _excelCells = (Excel.Range)excel_app.get_Range("A2", "C2").Cells;
+            _excelCells.Merge(Type.Missing);
+            _excelCells = (Excel.Range)excel_app.get_Range("A3", "C3").Cells;
+            excel_app.Cells[1, 1].Value = "Список сотрудников" + " " + DateTime.Now.ToShortDateString() + ", " + DateTime.Now.ToLongTimeString();
+            excel_app.Cells[1, 1].Font.Bold = true;
+            excel_app.Cells[1, 1].Font.Italic = true;
+            excel_app.Cells[1, 1].Font.Size = 14;
+            excel_app.Cells[1, 1].HorizontalAlignment = Excel.XlHAlign.xlHAlignCenter;
+            excel_app.Cells[3, 1].Value = "№";
+            excel_app.Columns[1].columnwidth = 3;
+            excel_app.Cells[3, 1].Font.Size = 14;
+            excel_app.Cells[3, 1].Font.Italic = true;
+            excel_app.Cells[3, 1].Font.Bold = true;
+            excel_app.Cells[3, 1].Borders.LineStyle = 1;
+            excel_app.Cells[3, 1].Borders.Weight = Excel.XlBorderWeight.xlThick;
+            excel_app.Cells[3, 2].Value = "ФИО работника";
+            excel_app.Columns[2].columnwidth = 30;
+            excel_app.Cells[3, 2].Font.Size = 14;
+            excel_app.Cells[3, 2].Font.Italic = true;
+            excel_app.Cells[3, 2].Font.Bold = true;
+            excel_app.Cells[3, 2].Borders.LineStyle = 1;
+            excel_app.Cells[3, 2].Borders.Weight = Excel.XlBorderWeight.xlThick;
+            excel_app.Cells[3, 3].Value = "Должность";
+            excel_app.Columns[3].columnwidth = 30;
+            excel_app.Cells[3, 3].Font.Size = 14;
+            excel_app.Cells[3, 3].Font.Italic = true;
+            excel_app.Cells[3, 3].Font.Bold = true;
+            excel_app.Cells[3, 3].Borders.LineStyle = 1;
+            excel_app.Cells[3, 3].Borders.Weight = Excel.XlBorderWeight.xlThick;
+            string SQL_text = "SELECT * From Master";
+            SqlConnection con1 = new SqlConnection(Data.Glob_connection_string);
+            con1.Open();
+
+            SqlCommand comm = new SqlCommand(SQL_text, con1);
+            SqlDataReader dr = comm.ExecuteReader();
+            int i = 4;
+           
+            while (dr.Read())
+            {
+                excel_app.Cells[i, 1].Value = i - 3;
+                excel_app.Cells[i, 1].Font.Size = 14;
+                excel_app.Cells[i, 1].Borders.LineStyle = 1;
+                excel_app.Cells[i, 2].Value = String.Format("{0}", dr["fio"]);
+                excel_app.Cells[i, 2].Font.Size = 14;
+                excel_app.Cells[i, 2].Borders.LineStyle = 1;
+                excel_app.Cells[i, 3].Value = String.Format("{0}", dr["dolg"]);
+                excel_app.Cells[i, 3].Font.Size = 14;
+                excel_app.Cells[i, 3].Borders.LineStyle = 1;
+                Excel.Range curr_cells = (Excel.Range)excel_app.get_Range("A" + i, "F" + i).Cells;
+                i = i + 1;
+
+            }
+            dr.Close();
+            con1.Close();
+
+        }
     }
-    }
+}
