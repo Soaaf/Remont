@@ -172,7 +172,7 @@ namespace Remont
                 excel_app.Cells[i, 3].Value = String.Format("{0}", dr["dolg"]);
                 excel_app.Cells[i, 3].Font.Size = 14;
                 excel_app.Cells[i, 3].Borders.LineStyle = 1;
-                Excel.Range curr_cells = (Excel.Range)excel_app.get_Range("A" + i, "F" + i).Cells;
+                Excel.Range curr_cells = (Excel.Range)excel_app.get_Range("A" + i, "C" + i).Cells;
                 i = i + 1;
 
             }
