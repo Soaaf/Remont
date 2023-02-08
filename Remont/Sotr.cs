@@ -15,7 +15,7 @@ namespace Remont
 
     public partial class Sotr : Form
     {
-        private Excel.Application excel_app;
+       private Excel.Application excel_app;
         string nmas;
 
         public Sotr()
@@ -181,4 +181,5 @@ namespace Remont
 
         }
     }
+
 }
