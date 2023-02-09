@@ -15,6 +15,11 @@ namespace Remont
     public partial class Remont : Form
     {
         private Excel.Application excel_app;
+        private Excel.Window excelWindow;
+        private Excel.Worksheet excelsheets;
+        private Excel.Workbook excelappworkbooks;
+        private int i = 0;
+        string itog_summa;
         public Remont()
         {
             InitializeComponent();
@@ -245,20 +250,22 @@ namespace Remont
             connection1 = new SqlConnection(Data.Glob_connection_string);
             connection1.Open();
             SqlDataAdapter adapter = new SqlDataAdapter(SQL, connection1);
-            DataTable tb = new DataTable();
-            adapter.Fill(tb);
-
-            dataGridView1.Refresh();
-            dataGridView1.DataSource = tb;
-            dataGridView1.Columns[0].HeaderText = "№ мастера";
-            dataGridView1.Columns[0].Width = 100;
-            connection1.Close();
+            DataTable tb1 = new DataTable();
+            adapter.Fill(tb1);
+            dataGridView2.Refresh();
+            dataGridView2.DataSource = tb1;
+            dataGridView2.Columns[0].HeaderText = "№";
+            dataGridView2.Columns[1].HeaderText = "Мастер";
+            dataGridView2.Columns[2].HeaderText = "Услуга";
+            dataGridView2.Columns[3].HeaderText = "Цена";
+            dataGridView2.Columns[4].HeaderText = "Количество";
+            dataGridView2.Columns[5].HeaderText = "Сумма";
             SQL = "Select r.n_z_n, r.data, sum(sum) from Remont r Group by r.n_z_n, r.data";
             connection1 = new SqlConnection(Data.Glob_connection_string);
             connection1.Open();
             adapter = new SqlDataAdapter(SQL, connection1);
-            DataTable tb1 = new DataTable();
-            adapter.Fill(tb1);
+            DataTable tb = new DataTable();
+            adapter.Fill(tb);
             dataGridView3.Refresh();
             dataGridView3.DataSource = tb;
             dataGridView3.Columns[0].HeaderText = "№";
@@ -274,78 +281,109 @@ namespace Remont
                 SheetsInNewWorkbook = 1
             };
             excel_app.Workbooks.Add(Type.Missing);
-
+            //объединяем ячейки
             Excel.Range _excelCells = (Excel.Range)excel_app.get_Range("A1", "F1").Cells;
             _excelCells.Merge(Type.Missing);
             _excelCells = (Excel.Range)excel_app.get_Range("A2", "F2").Cells;
             _excelCells.Merge(Type.Missing);
             _excelCells = (Excel.Range)excel_app.get_Range("A3", "F3").Cells;
-            excel_app.Cells[1, 1].Value = "Заказ-наряд № " + label9.Text + " от " + dateTimePicker1.Value.ToString("MM/dd/yyyy");
+            _excelCells.Merge(Type.Missing);
+            _excelCells = (Excel.Range)excel_app.get_Range("A4", "F4").Cells;
+            _excelCells.Merge(Type.Missing);
+            _excelCells = (Excel.Range)excel_app.get_Range("A5", "F5").Cells;
+            _excelCells.Merge(Type.Missing);
+            _excelCells = (Excel.Range)excel_app.get_Range("A6", "F6").Cells;
+            _excelCells.Merge(Type.Missing);
+            _excelCells = (Excel.Range)excel_app.get_Range("A7", "F7").Cells;
+            _excelCells.Merge(Type.Missing);
+
+            excel_app.Cells[1, 1].Value = "Заказ - наряд №" + label9.Text + " от " + dateTimePicker1.Value.ToString("yyyy-MM-dd");
+            excel_app.Cells[1, 1].Font.Italic = true;
+            excel_app.Cells[1, 1].Font.Size = 14;
             excel_app.Cells[1, 1].Font.Bold = true;
             excel_app.Cells[1, 1].HorizontalAlignment = Excel.XlHAlign.xlHAlignCenter;
 
-            excel_app.Cells[2, 1].Value = "Исполнитель: Техцентр AVTO, ИНН 26311001412544, тел.: 7-77-77";
+            excel_app.Cells[2, 1].Value = "Исполнитель: Техцентр AVTO, ИНН 263100141545, тел.: 7-77-77";
+            excel_app.Cells[2, 1].Font.Italic = true;
+            excel_app.Cells[2, 1].Font.Size = 14;
+
             excel_app.Cells[3, 1].Value = "Заказчик: " + dataGridView1[6, dataGridView1.CurrentRow.Index].Value.ToString();
-            excel_app.Cells[4, 1].Value = "Модель: " + dataGridView1[3, dataGridView1.CurrentRow.Index].Value.ToString() +
-                 " " + dataGridView1[2, dataGridView1.CurrentRow.Index].Value.ToString();
-            
+            excel_app.Cells[3, 1].Font.Italic = true;
+            excel_app.Cells[3, 1].Font.Size = 14;
+
+            excel_app.Cells[4, 1].Value = "Модель: " + dataGridView1[3, dataGridView1.CurrentRow.Index].Value.ToString() + " " + dataGridView1[2, dataGridView1.CurrentRow.Index].Value.ToString();
+            excel_app.Cells[4, 1].Font.Italic = true;
+            excel_app.Cells[4, 1].Font.Size = 14;
+
+            excel_app.Cells[5, 1].Value = "Год выпуска: " + dataGridView1[4, dataGridView1.CurrentRow.Index].Value.ToString();
+            excel_app.Cells[5, 1].Font.Italic = true;
+            excel_app.Cells[5, 1].Font.Size = 14;
+
+            excel_app.Cells[6, 1].Value = "Рег. №: " + dataGridView1[5, dataGridView1.CurrentRow.Index].Value.ToString();
+            excel_app.Cells[6, 1].Font.Italic = true;
+            excel_app.Cells[6, 1].Font.Size = 14;
+
+            excel_app.Cells[7, 1].Value = "VIN: " + dataGridView1[1, dataGridView1.CurrentRow.Index].Value.ToString();
+            excel_app.Cells[7, 1].Font.Italic = true;
+            excel_app.Cells[7, 1].Font.Size = 14;
+
             excel_app.Cells[9, 1].Value = "№";
-            excel_app.Columns[1].columnwidth = 3;
-            excel_app.Cells[9, 1].Font.Size = 14;
             excel_app.Cells[9, 1].Font.Italic = true;
+            excel_app.Cells[9, 1].Font.Size = 14;
             excel_app.Cells[9, 1].Font.Bold = true;
             excel_app.Cells[9, 1].Borders.LineStyle = 1;
             excel_app.Cells[9, 1].Borders.Weight = Excel.XlBorderWeight.xlThick;
+            excel_app.Columns[1].columnwidth = 3;
 
             excel_app.Cells[9, 2].Value = "Наименование работы";
-            excel_app.Columns[2].columnwidth = 30;
-            excel_app.Cells[9, 2].Font.Size = 14;
             excel_app.Cells[9, 2].Font.Italic = true;
+            excel_app.Cells[9, 2].Font.Size = 14;
             excel_app.Cells[9, 2].Font.Bold = true;
             excel_app.Cells[9, 2].Borders.LineStyle = 1;
             excel_app.Cells[9, 2].Borders.Weight = Excel.XlBorderWeight.xlThick;
+            excel_app.Columns[2].columnwidth = 30;
 
             excel_app.Cells[9, 3].Value = "ФИО работника";
-            excel_app.Columns[3].columnwidth = 30;
-            excel_app.Cells[9, 3].Font.Size = 14;
             excel_app.Cells[9, 3].Font.Italic = true;
+            excel_app.Cells[9, 3].Font.Size = 14;
             excel_app.Cells[9, 3].Font.Bold = true;
             excel_app.Cells[9, 3].Borders.LineStyle = 1;
             excel_app.Cells[9, 3].Borders.Weight = Excel.XlBorderWeight.xlThick;
+            excel_app.Columns[3].columnwidth = 30;
 
-            excel_app.Cells[9, 4].Value = "Стоимость";
-            excel_app.Columns[4].columnwidth = 30;
-            excel_app.Cells[9, 4].Font.Size = 14;
+            excel_app.Cells[9, 4].Value = "Цена";
             excel_app.Cells[9, 4].Font.Italic = true;
+            excel_app.Cells[9, 4].Font.Size = 14;
             excel_app.Cells[9, 4].Font.Bold = true;
             excel_app.Cells[9, 4].Borders.LineStyle = 1;
             excel_app.Cells[9, 4].Borders.Weight = Excel.XlBorderWeight.xlThick;
+            excel_app.Columns[4].columnwidth = 12;
 
-            excel_app.Cells[9, 5].Value = "Количество";
-            excel_app.Columns[5].columnwidth = 30;
+            excel_app.Cells[9, 5].Value = "Кол-во";
+            excel_app.Cells[9, 55].Font.Italic = true;
             excel_app.Cells[9, 5].Font.Size = 14;
-            excel_app.Cells[9, 5].Font.Italic = true;
             excel_app.Cells[9, 5].Font.Bold = true;
             excel_app.Cells[9, 5].Borders.LineStyle = 1;
             excel_app.Cells[9, 5].Borders.Weight = Excel.XlBorderWeight.xlThick;
+            excel_app.Columns[5].columnwidth = 12;
 
             excel_app.Cells[9, 6].Value = "Сумма";
-            excel_app.Columns[6].columnwidth = 30;
-            excel_app.Cells[9, 6].Font.Size = 14;
             excel_app.Cells[9, 6].Font.Italic = true;
+            excel_app.Cells[9, 6].Font.Size = 14;
             excel_app.Cells[9, 6].Font.Bold = true;
             excel_app.Cells[9, 6].Borders.LineStyle = 1;
             excel_app.Cells[9, 6].Borders.Weight = Excel.XlBorderWeight.xlThick;
+            excel_app.Columns[6].columnwidth = 12;
 
             string SQL_text = "SELECT R.id, M.fio, U.naimen, U.stoim, R.kol, U.stoim * R.kol as summa " +
-                "FROM REMONT R, USLUGI U, MASTER M WHERE " +
-                "R.n_usl = U.n_usl AND M.n_mast = R.n_mast AND R.n_z_n = " + label9.Text;
+                  "FROM REMONT R, USLUGI U, MASTER M WHERE " +
+                  "R.n_usl = U.n_usl AND M.n_mast = R.n_mast AND R.n_z_n = " + label9.Text;
             SqlConnection con1 = new SqlConnection(Data.Glob_connection_string);
             con1.Open();
 
             SqlCommand comm = new SqlCommand(SQL_text, con1);
             SqlDataReader dr = comm.ExecuteReader();
-            int i = 10;
+            i = 10;
             decimal itog_summa = 0;
             while (dr.Read())
             {
@@ -365,15 +403,13 @@ namespace Remont
             }
             dr.Close();
             con1.Close();
+
             excel_app.Cells[i, 5].Value = "ИТОГО";
             excel_app.Cells[i, 5].Font.Size = 12;
             excel_app.Cells[i, 5].Borders.LineStyle = 1;
             excel_app.Cells[i, 6].Value = itog_summa;
             excel_app.Cells[i, 6].Font.Size = 12;
             excel_app.Cells[i, 6].Borders.LineStyle = 1;
-
-
         }
     }
 }
-
